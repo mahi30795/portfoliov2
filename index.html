@@ -138,6 +138,12 @@
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
         }
+
+        @keyframes timeline {
+            0%   { box-shadow: 0 0 5px 2px #d29bff, 0 0 15px 8px #d097ff, 0 0 40px  8px #f2c0ff; }
+            50%  { box-shadow: 0 0 8px 4px #e0b0ff, 0 0 25px 14px #c481ff, 0 0 110px 20px #f2c0ff; }
+            100% { box-shadow: 0 0 5px 2px #d29bff, 0 0 15px 8px #d097ff, 0 0 40px  8px #f2c0ff; }
+        }
     </style>
 </head>
 <body class="relative flex flex-col min-h-[100dvh]">
@@ -221,9 +227,9 @@
                         <!-- Invisible ghost text to hold the max width and maintain layout stability -->
                         <div class="text-4xl md:text-5xl lg:text-7xl tracking-widest leading-none invisible pointer-events-none select-none whitespace-nowrap">DEVELOPER</div>
                         <!-- Background text -->
-                        <div id="bg-text" class="text-4xl md:text-5xl lg:text-7xl tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-brand-light via-brand-purple to-[#4b148b] leading-none opacity-80 glow-text absolute top-0 left-0 whitespace-nowrap">Architect</div>
+                        <div id="bg-text" class="text-4xl md:text-5xl lg:text-7xl tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-brand-light via-brand-purple to-[#4b148b] leading-none opacity-80 glow-text absolute top-0 left-0 whitespace-nowrap">DEVELOPER</div>
                         <!-- Foreground text -->
-                        <div id="fg-text" class="text-4xl md:text-5xl lg:text-7xl tracking-tight text-white absolute top-[40%] left-[5%] z-10 block whitespace-nowrap" style="text-shadow: 0px 10px 20px rgba(0,0,0,0.9);">DEVELOPER</div>
+                        <div id="fg-text" class="text-4xl md:text-5xl lg:text-7xl tracking-tight text-white absolute top-[40%] left-[5%] z-10 block whitespace-nowrap" style="text-shadow: 0px 10px 20px rgba(0,0,0,0.9);">ARCHITECT</div>
                     </div>
                 </div>
             </div>
@@ -243,94 +249,124 @@
         </section>
 
         <!-- Experience Section -->
-        <section id="experience" class="w-full min-h-[100dvh] flex flex-col justify-start px-[8%] md:px-[12%] py-32 relative z-30 pointer-events-auto mt-24">
-            
+        <section id="experience" class="w-full flex flex-col justify-start px-[5%] md:px-[6%] py-24 md:py-36 relative z-30 pointer-events-auto">
+
             <!-- Section Title -->
-            <div class="text-center mb-24 md:mb-32 relative z-10 w-full flex flex-col items-center">
-                <h2 class="font-sans text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight">My career &</h2>
-                <h2 class="font-sans text-4xl md:text-5xl lg:text-6xl font-light text-[#c481ff] tracking-tight glow-text mt-1">experience</h2>
+            <div class="text-center mb-20 md:mb-32 w-full flex flex-col items-center">
+                <h2 class="font-sans font-normal text-center" style="font-size:70px; line-height:70px; font-weight:400; background: linear-gradient(0deg, #7f40ff, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">My career &amp;<br>experience</h2>
             </div>
 
-            <div class="relative w-full max-w-5xl mx-auto flex flex-col py-10" id="timeline-container">
-                
-                <!-- Timeline Line Container -->
-                <div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-[2px] bg-white/10 z-0 transform md:-translate-x-1/2 rounded-full">
-                    <!-- Animated Gradient Fill -->
-                    <div id="timeline-fill" class="absolute top-0 left-0 w-full bg-gradient-to-b from-[#c481ff] to-[#e0d6ed] z-10 rounded-full shadow-[0_0_15px_rgba(196,129,255,0.6)] origin-top transition-all duration-[50ms] ease-linear" style="height: 0%;">
-                        <!-- Glowing Dot at bottom of fill -->
-                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#e0d6ed] rounded-full shadow-[0_0_20px_#e0d6ed,0_0_40px_rgba(196,129,255,1)]"></div>
+            <!-- Timeline -->
+            <div id="timeline-container" class="relative w-full max-w-5xl mx-auto">
+
+                <!-- Track line (full height, faint) -->
+                <div class="absolute top-0 bottom-0 left-6 md:left-1/2 w-px bg-white/[0.07] md:-translate-x-px pointer-events-none">
+                    <!-- Fill (scroll-driven) -->
+                    <div id="timeline-fill" class="absolute top-0 left-0 w-full rounded-full origin-top" style="height:0%; background: linear-gradient(to top, #aa42ff 20%, #c481ff 50%, transparent 95%); box-shadow: 0 0 12px 2px rgba(170,66,255,0.5); transition: height 60ms linear;">
+                        <!-- Glowing dot at tip of fill -->
+                        <div id="timeline-dot" class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full" style="width:10px;height:10px;background-color:#aa42ff;box-shadow:0 0 5px 2px #d29bff,0 0 15px 8px #d097ff,0 0 110px 20px #f2c0ff;animation:timeline .8s linear infinite;"></div>
                     </div>
                 </div>
 
-                <!-- Timeline Items -->
-                <div class="flex flex-col gap-20 md:gap-32 relative z-10 w-full">
-                    
-                    <!-- Item 1: NETOBJEX Blockchain -->
-                    <div class="timeline-item opacity-0 transform translate-y-12 transition-all duration-700 ease-out flex flex-col md:flex-row items-start w-full">
-                        <div class="pl-8 md:pl-0 w-full md:w-1/2 flex justify-between md:justify-end items-start md:pr-16 relative">
-                            <div class="flex flex-col text-left md:mr-auto">
-                                <h3 class="font-clash text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight text-gray-200">Fullstack Developer<br class="hidden md:block">(Blockchain)</h3>
-                                <span class="text-[#c481ff] mt-2 text-xs md:text-sm tracking-wide">NETOBJEX</span>
-                            </div>
-                            <div class="font-clash text-xl md:text-2xl lg:text-3xl font-bold tracking-widest text-gray-200 self-start md:self-center ml-4 whitespace-nowrap">
-                                2018 — 2021
-                            </div>
+                <!-- Items -->
+                <div class="flex flex-col" style="gap: clamp(5rem, 8vw, 7rem);">
+
+                    <!-- Item 1 -->
+                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                        <!-- Mobile -->
+                        <div class="flex flex-col pl-14 md:hidden">
+                            <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">2018</span>
+                            <h3 class="font-clash text-xl font-semibold text-white leading-snug">Fullstack Developer<br>(Blockchain)</h3>
+                            <span class="text-[#c481ff] mt-1 text-[0.65rem] tracking-[0.2em] uppercase">NETOBJEX</span>
+                            <p class="text-gray-400 text-sm leading-relaxed mt-3">Constructed HD wallet infrastructure across Bitcoin &amp; Ethereum, deployed permissioned Hyperledger Fabric onboarding 10,000 corporate users. Designed P2P exchange platforms and integrated EOS for zero-fee gaming microtransactions.</p>
                         </div>
-                        <div class="pl-8 md:pl-16 w-full md:w-1/2 mt-6 md:mt-0 text-gray-400 text-sm md:text-base leading-relaxed max-w-xl">
-                            Constructed Hierarchical Deterministic wallet infrastructure spanning Bitcoin and Ethereum networks, and deployed a permissioned Hyperledger Fabric architecture onboarding 10,000 corporate users. Designed proprietary peer-to-peer exchange platforms and integrated EOS blockchains to support zero-fee gaming microtransactions.
+                        <!-- Desktop -->
+                        <div class="hidden md:grid items-start" style="grid-template-columns: 3fr 9rem 3fr;">
+                            <div class="flex items-start justify-between self-start pr-10">
+                                <div>
+                                    <h3 class="font-clash text-xl lg:text-2xl font-semibold text-white leading-snug">Fullstack<br/> Developer (Blockchain)</h3>
+                                    <span class="text-[#c481ff] mt-2 text-[0.65rem] tracking-[0.2em] uppercase block">NETOBJEX</span>
+                                </div>
+                                <span class="font-clash text-4xl lg:text-5xl font-bold leading-none tracking-tight ml-6 shrink-0" style="color:rgba(255,255,255,0.55);">2018</span>
+                            </div>
+                            <div></div>
+                            <div class="pl-10 text-gray-400 text-sm lg:text-[0.95rem] leading-relaxed self-start">
+                                Constructed HD wallet infrastructure across Bitcoin &amp; Ethereum, deployed permissioned Hyperledger Fabric onboarding 10,000 corporate users. Designed P2P exchange platforms and integrated EOS for zero-fee gaming microtransactions.
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Item 2: TAUGHT SE -->
-                    <div class="timeline-item opacity-0 transform translate-y-12 transition-all duration-700 ease-out flex flex-col md:flex-row items-start w-full">
-                        <div class="pl-8 md:pl-0 w-full md:w-1/2 flex justify-between md:justify-end items-start md:pr-16 relative">
-                            <div class="flex flex-col text-left md:mr-auto">
-                                <h3 class="font-clash text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight text-gray-200">SWE</h3>
-                                <span class="text-[#c481ff] mt-2 text-xs md:text-sm tracking-wide">TAUGHT</span>
-                            </div>
-                            <div class="font-clash text-xl md:text-2xl lg:text-3xl font-bold tracking-widest text-gray-200 self-start md:self-center ml-4 whitespace-nowrap">
-                                2021 — 2022
-                            </div>
+                    <!-- Item 2 -->
+                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                        <div class="flex flex-col pl-14 md:hidden">
+                            <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">2021</span>
+                            <h3 class="font-clash text-xl font-semibold text-white leading-snug">Software Engineer</h3>
+                            <span class="text-[#c481ff] mt-1 text-[0.65rem] tracking-[0.2em] uppercase">TAUGHT</span>
+                            <p class="text-gray-400 text-sm leading-relaxed mt-3">Engineered &ldquo;FUNROOM,&rdquo; a real-time virtual classroom with Vue.js, Node.js &amp; WebSockets. Built a BullMQ-backed scheduler automating workflows with 100% uptime and proactive issue detection.</p>
                         </div>
-                        <div class="pl-8 md:pl-16 w-full md:w-1/2 mt-6 md:mt-0 text-gray-400 text-sm md:text-base leading-relaxed max-w-xl">
-                            Engineered "FUNROOM," a real-time virtual classroom using Vue.js, Node.js, and WebSockets that significantly improved live engagement metrics. Built a BullMQ-backed scheduling system to automate systemic operational workflows while maintaining 100% application uptime and proactive issue detection logic.
+                        <div class="hidden md:grid items-start" style="grid-template-columns: 3fr 9rem 3fr;">
+                            <div class="flex items-start justify-between self-start pr-10">
+                                <div>
+                                    <h3 class="font-clash text-xl lg:text-2xl font-semibold text-white leading-snug">Software Engineer</h3>
+                                    <span class="text-[#c481ff] mt-2 text-[0.65rem] tracking-[0.2em] uppercase block">TAUGHT</span>
+                                </div>
+                                <span class="font-clash text-4xl lg:text-5xl font-bold leading-none tracking-tight ml-6 shrink-0" style="color:rgba(255,255,255,0.55);">2021</span>
+                            </div>
+                            <div></div>
+                            <div class="pl-10 text-gray-400 text-sm lg:text-[0.95rem] leading-relaxed self-start">
+                                Engineered &ldquo;FUNROOM,&rdquo; a real-time virtual classroom with Vue.js, Node.js &amp; WebSockets. Built a BullMQ-backed scheduler automating workflows with 100% uptime and proactive issue detection.
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Item 3: AdmitKard SDE II -->
-                    <div class="timeline-item opacity-0 transform translate-y-12 transition-all duration-700 ease-out flex flex-col md:flex-row items-start w-full">
-                        <div class="pl-8 md:pl-0 w-full md:w-1/2 flex justify-between md:justify-end items-start md:pr-16 relative">
-                            <div class="flex flex-col text-left md:mr-auto">
-                                <h3 class="font-clash text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight text-gray-200">SDE II</h3>
-                                <span class="text-[#c481ff] mt-2 text-xs md:text-sm tracking-wide">ADMITKARD</span>
-                            </div>
-                            <div class="font-clash text-xl md:text-2xl lg:text-3xl font-bold tracking-widest text-gray-200 self-start md:self-center ml-4 whitespace-nowrap">
-                                2022 — 2023
-                            </div>
+                    <!-- Item 3 -->
+                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                        <div class="flex flex-col pl-14 md:hidden">
+                            <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">2022</span>
+                            <h3 class="font-clash text-xl font-semibold text-white leading-snug">Software<br/> Development Engineer II</h3>
+                            <span class="text-[#c481ff] mt-1 text-[0.65rem] tracking-[0.2em] uppercase">ADMITKARD</span>
+                            <p class="text-gray-400 text-sm leading-relaxed mt-3">Architected a fault-tolerant event-driven pipeline and hot-swappable JSON rule engine. Re-architected to containerized blue-green deployments managing 100K course records.</p>
                         </div>
-                        <div class="pl-8 md:pl-16 w-full md:w-1/2 mt-6 md:mt-0 text-gray-400 text-sm md:text-base leading-relaxed max-w-xl">
-                            Architected a fault-tolerant, event-driven pipeline and a hot-swappable JSON rule engine to handle high-volume workflow state changes with zero message loss. Re-architected pipelines to fully containerized blue-green deployments and automated an event-triggered sync workflow that continuously managed 100K course records.
+                        <div class="hidden md:grid items-start" style="grid-template-columns: 3fr 9rem 3fr;">
+                            <div class="flex items-start justify-between self-start pr-10">
+                                <div>
+                                    <h3 class="font-clash text-xl lg:text-2xl font-semibold text-white leading-snug">Software<br/> Development Engineer II</h3>
+                                    <span class="text-[#c481ff] mt-2 text-[0.65rem] tracking-[0.2em] uppercase block">ADMITKARD</span>
+                                </div>
+                                <span class="font-clash text-4xl lg:text-5xl font-bold leading-none tracking-tight ml-6 shrink-0" style="color:rgba(255,255,255,0.55);">2022</span>
+                            </div>
+                            <div></div>
+                            <div class="pl-10 text-gray-400 text-sm lg:text-[0.95rem] leading-relaxed self-start">
+                                Architected a fault-tolerant event-driven pipeline and hot-swappable JSON rule engine. Re-architected to containerized blue-green deployments managing 100K course records.
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Item 4: AdmitKard SDE III -->
-                    <div class="timeline-item opacity-0 transform translate-y-12 transition-all duration-700 ease-out flex flex-col md:flex-row items-start w-full">
-                        <div class="pl-8 md:pl-0 w-full md:w-1/2 flex justify-between md:justify-end items-start md:pr-16 relative">
-                            <div class="flex flex-col text-left md:mr-auto">
-                                <h3 class="font-clash text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight text-gray-200">SDE III</h3>
-                                <span class="text-[#c481ff] mt-2 text-xs md:text-sm tracking-wide">ADMITKARD</span>
-                            </div>
-                            <div class="font-clash text-xl md:text-2xl lg:text-3xl font-bold tracking-widest text-gray-200 self-start md:self-center ml-4 whitespace-nowrap">
-                                2023 — NOW
-                            </div>
+                    <!-- Item 4 -->
+                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                        <div class="flex flex-col pl-14 md:hidden">
+                            <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">NOW</span>
+                            <h3 class="font-clash text-xl font-semibold text-white leading-snug">Software<br/> Development Engineer III</h3>
+                            <span class="text-[#c481ff] mt-1 text-[0.65rem] tracking-[0.2em] uppercase">ADMITKARD</span>
+                            <p class="text-gray-400 text-sm leading-relaxed mt-3">Led AI-powered student counseling platform cutting processing time 80%. Cut cloud spend 65%, halved API latency via legacy overhauls, enforced network security and testing standards.</p>
                         </div>
-                        <div class="pl-8 md:pl-16 w-full md:w-1/2 mt-6 md:mt-0 text-gray-400 text-sm md:text-base leading-relaxed max-w-xl">
-                            Led the end-to-end development of an AI-powered student counseling platform and an automated document intelligence pipeline, reducing processing time by 80%. Championed major infrastructure optimizations to cut cloud spend by 65%, halved API latency through legacy service overhauls, and enforced robust network security and testing standards.
+                        <div class="hidden md:grid items-start" style="grid-template-columns: 3fr 9rem 3fr;">
+                            <div class="flex items-start justify-between self-start pr-10">
+                                <div>
+                                    <h3 class="font-clash text-xl lg:text-2xl font-semibold text-white leading-snug">Software<br/> Development Engineer III</h3>
+                                    <span class="text-[#c481ff] mt-2 text-[0.65rem] tracking-[0.2em] uppercase block">ADMITKARD</span>
+                                </div>
+                                <span class="font-clash text-4xl lg:text-5xl font-bold leading-none tracking-tight ml-6 shrink-0" style="color:rgba(255,255,255,0.55);">NOW</span>
+                            </div>
+                            <div></div>
+                            <div class="pl-10 text-gray-400 text-sm lg:text-[0.95rem] leading-relaxed self-start">
+                                Led AI-powered student counseling platform cutting processing time 80%. Cut cloud spend 65%, halved API latency via legacy overhauls, enforced network security and testing standards.
+                            </div>
                         </div>
                     </div>
 
-                </div>
-            </div>
+                </div><!-- /items -->
+            </div><!-- /timeline-container -->
         </section>
 
         <!-- Contact / Footer -->
@@ -453,79 +489,85 @@
         document.addEventListener('DOMContentLoaded', () => {
             const bgText = document.getElementById('bg-text');
             const fgText = document.getElementById('fg-text');
-            
-            let bgCurrent = 'Architect';
-            let fgCurrent = 'DEVELOPER';
 
-            function initSpans(element, text) {
-                element.innerHTML = '';
-                const chars = Array.from(text);
-                chars.forEach((char) => {
+            const words = ['DEVELOPER', 'ARCHITECT'];
+            let bgIndex = 0; // starts at DEVELOPER
+            let fgIndex = 1; // starts at ARCHITECT
+            let animating = false;
+
+            // bg-text: whole-word fade — no spans so background-clip:text works on all browsers including mobile Safari
+            function swapBgText(newWord) {
+                bgText.style.transition = 'opacity 0.35s ease';
+                bgText.style.opacity = '0';
+                setTimeout(() => {
+                    bgText.textContent = newWord;
+                    void bgText.offsetWidth;
+                    bgText.style.opacity = '0.8';
+                }, 400);
+            }
+
+            // fg-text: character-by-character stagger (white text — no background-clip, spans are fine)
+            function initFgSpans(text) {
+                fgText.innerHTML = '';
+                Array.from(text).forEach((char) => {
                     const span = document.createElement('span');
-                    span.innerText = char === ' ' ? '\u00A0' : char;
+                    span.textContent = char === ' ' ? '\u00A0' : char;
                     span.style.display = 'inline-block';
                     span.style.opacity = '1';
                     span.style.transform = 'translateY(0)';
-                    element.appendChild(span);
+                    fgText.appendChild(span);
                 });
             }
 
-            function swapTextStaggered(element, currentText, newText) {
-                const oldSpans = Array.from(element.children);
-                const newChars = Array.from(newText);
-                
-                // Animate old characters out
+            function swapFgText(newWord) {
+                const oldSpans = Array.from(fgText.children);
                 oldSpans.forEach((span, i) => {
                     span.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
                     setTimeout(() => {
                         span.style.opacity = '0';
                         span.style.transform = 'translateY(15px)';
-                    }, i * 60);
+                    }, i * 55);
                 });
 
-                const maxOutDelay = (oldSpans.length * 60) + 400;
-                
+                const outDelay = (oldSpans.length * 55) + 380;
                 setTimeout(() => {
-                    element.innerHTML = '';
-                    const newSpans = [];
-                    newChars.forEach((char) => {
+                    fgText.innerHTML = '';
+                    const newSpans = Array.from(newWord).map((char) => {
                         const span = document.createElement('span');
-                        span.innerText = char === ' ' ? '\u00A0' : char;
+                        span.textContent = char === ' ' ? '\u00A0' : char;
                         span.style.display = 'inline-block';
                         span.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
                         span.style.opacity = '0';
                         span.style.transform = 'translateY(-15px)';
-                        
-                        element.appendChild(span);
-                        newSpans.push(span);
+                        fgText.appendChild(span);
+                        return span;
                     });
-
-                    // Trigger reflow
-                    void element.offsetWidth;
-
+                    void fgText.offsetWidth;
                     newSpans.forEach((span, i) => {
                         setTimeout(() => {
                             span.style.opacity = '1';
                             span.style.transform = 'translateY(0)';
-                        }, i * 60);
+                        }, i * 55);
                     });
-                }, maxOutDelay);
+                }, outDelay);
             }
 
-            // Initialize with spans
-            initSpans(bgText, bgCurrent);
-            initSpans(fgText, fgCurrent);
+            // Initialize — bg uses textContent directly, fg uses spans
+            bgText.textContent = words[bgIndex];
+            initFgSpans(words[fgIndex]);
 
             setInterval(() => {
-                const nextBg = bgCurrent === 'Architect' ? 'DEVELOPER' : 'Architect';
-                const nextFg = fgCurrent === 'DEVELOPER' ? 'Architect' : 'DEVELOPER';
+                if (animating) return;
+                animating = true;
 
-                swapTextStaggered(bgText, bgCurrent, nextBg);
-                swapTextStaggered(fgText, fgCurrent, nextFg);
+                bgIndex = (bgIndex + 1) % words.length;
+                fgIndex = (fgIndex + 1) % words.length;
 
-                bgCurrent = nextBg;
-                fgCurrent = nextFg;
-            }, 4500); 
+                swapBgText(words[bgIndex]);
+                swapFgText(words[fgIndex]);
+
+                setTimeout(() => { animating = false; }, 2000);
+            }, 4500);
         });
     </script>
 
@@ -589,46 +631,58 @@
         }
 
         // --- Timeline Scroll Animation Logic ---
-        const experienceSection = document.getElementById('experience');
-        const timelineContainer = document.getElementById('timeline-container');
-        const timelineFill = document.getElementById('timeline-fill');
-        const timelineItems = document.querySelectorAll('.timeline-item');
+        (function () {
+            const container  = document.getElementById('timeline-container');
+            const fill       = document.getElementById('timeline-fill');
+            const items      = Array.from(document.querySelectorAll('.timeline-item'));
+            if (!container || !fill || !items.length) return;
 
-        if (experienceSection && timelineContainer && timelineFill) {
-            window.addEventListener('scroll', () => {
-                const rect = timelineContainer.getBoundingClientRect();
-                const viewHeight = window.innerHeight;
-                
-                // Track progress when top of the timeline reaches the middle of the screen
-                const startPoint = viewHeight * 0.6; 
-                
-                let progress = 0;
-                
-                // If container has reached the start point limit
-                if (rect.top <= startPoint) {
-                    const scrollDistance = startPoint - rect.top;
-                    // Provide a little padding (e.g. 100px) so it fills up to the bottom smoothly
-                    const effectiveHeight = rect.height - 50; 
-                    progress = (scrollDistance / effectiveHeight) * 100;
-                    progress = Math.min(Math.max(progress, 0), 100);
-                }
-                
-                timelineFill.style.height = `${progress}%`;
+            // Cache each item's top offset relative to the container (absolute, not viewport)
+            // Called once on init and on resize to account for reflow.
+            let itemTops = [];
+            function cacheOffsets() {
+                const cTop = container.getBoundingClientRect().top + window.scrollY;
+                itemTops = items.map(el => el.getBoundingClientRect().top + window.scrollY - cTop);
+            }
 
-                // Handle fading in timeline individual items
-                timelineItems.forEach(item => {
-                    const itemRect = item.getBoundingClientRect();
-                    // Fade in when the item is visible inside the bottom 15% threshold of viewport
-                    if (itemRect.top < viewHeight * 0.85) {
-                        item.classList.remove('opacity-0', 'translate-y-12');
-                        item.classList.add('opacity-100', 'translate-y-0');
+            function update() {
+                const cRect  = container.getBoundingClientRect();
+                const cH     = container.offsetHeight;
+                const viewH  = window.innerHeight;
+                const scrollY = window.scrollY;
+
+                // Animation window:
+                //   starts when container-top reaches 65% down the viewport
+                //   ends   when container-bottom reaches 35% down the viewport
+                const cAbsTop = cRect.top + scrollY;
+                const animStart = cAbsTop - viewH * 0.65;
+                const animEnd   = cAbsTop + cH   - viewH * 0.35;
+                const progress  = Math.min(1, Math.max(0, (scrollY - animStart) / (animEnd - animStart)));
+
+                fill.style.height = (progress * 100) + '%';
+
+                // linePx: how far down the container the fill tip has reached
+                const linePx = progress * cH;
+
+                items.forEach(function(item, i) {
+                    // Reveal when the line tip is within 40px above the item's top
+                    if (linePx >= (itemTops[i] || 0) - 40) {
+                        item.style.opacity  = '1';
+                        item.style.transform = 'translateY(0)';
                     }
                 });
-            });
-            
-            // Trigger an initial check
-            window.dispatchEvent(new Event('scroll'));
-        }
+            }
+
+            // Init — wait a tick so layout is settled
+            setTimeout(function() {
+                cacheOffsets();
+                update();
+            }, 80);
+
+            window.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', function() { cacheOffsets(); update(); });
+        })();
+
     </script>
 </body>
 </html>
