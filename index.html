@@ -14,6 +14,10 @@
     <!-- Tailwind CSS (via CDN for simplicity as requested) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -120,8 +124,7 @@
             pointer-events: none;
             mix-blend-mode: difference;
             z-index: 99999;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
         }
 
         body {
@@ -144,16 +147,24 @@
         #ts-stage-wrap { display:flex; justify-content:center; }
         #ts-stage { position:relative; width:680px; height:560px; flex-shrink:0; }
         #ts-svg { position:absolute; inset:0; overflow:visible; }
-        .ts-icon { position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; width:62px; height:62px; background:#09041a; border:1px solid rgba(196,129,255,0.18); border-radius:8px; opacity:0; transform:scale(0.8); transition: opacity 0.4s ease, transform 0.4s ease; }
-        .ts-icon.ts-visible { opacity:1; transform:scale(1); }
+        .ts-icon { position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; width:62px; height:62px; background:#09041a; border:1px solid rgba(196,129,255,0.18); border-radius:8px; }
         .ts-icon-label { color:rgba(255,255,255,0.5); font-size:8px; letter-spacing:0.07em; font-weight:500; font-family:sans-serif; }
         .ts-glow { stroke:#c481ff; stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:1; }
-        .ts-glow.ts-drawn { stroke-dashoffset:0; transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1); }
-        .ts-dot { fill:#c481ff; opacity:0; transition: opacity 0.3s ease; }
-        .ts-dot.ts-visible { opacity:1; }
+        .ts-dot { fill:#c481ff; opacity:0; }
         .ts-tag { display:inline-block; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:500; letter-spacing:0.04em; color:rgba(255,255,255,0.65); background:rgba(196,129,255,0.07); border:1px solid rgba(196,129,255,0.15); font-family:sans-serif; }
         @media (max-width:720px) { #ts-stage-wrap { transform:scale(0.62); transform-origin:top center; height:347px; } }
         @media (max-width:480px) { #ts-stage-wrap { transform:scale(0.43); transform-origin:top center; height:241px; } }
+
+        /* Reusable gradient heading */
+        .grad-heading {
+            font-size: 70px;
+            line-height: 70px;
+            font-weight: 400;
+            background: linear-gradient(0deg, #7f40ff, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         @keyframes timeline {
             0%   { box-shadow: 0 0 5px 2px #d29bff, 0 0 15px 8px #d097ff, 0 0 40px  8px #f2c0ff; }
@@ -177,7 +188,7 @@
         </div>
 
         <!-- Center Pill -->
-        <div id="loader-pill" class="relative z-10 flex items-center justify-between bg-black/95 rounded-full px-6 md:px-8 py-4 md:py-5 border border-[#c2a4ff]/20 shadow-[0_0_30px_rgba(194,164,255,0.15)] w-[260px] md:w-[320px] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]" style="-webkit-transform: translateZ(0); transform: translateZ(0);">
+        <div id="loader-pill" class="relative z-10 flex items-center justify-between bg-black/95 rounded-full px-6 md:px-8 py-4 md:py-5 border border-[#c2a4ff]/20 shadow-[0_0_30px_rgba(194,164,255,0.15)] w-[260px] md:w-[320px] overflow-hidden" style="-webkit-transform: translateZ(0); transform: translateZ(0);">
             <!-- Progress Fill Background inside pill -->
             <div id="loader-progress-fill" class="absolute left-0 top-0 bottom-0 bg-[#c2a4ff]/10 w-0 transition-all duration-300 ease-out z-0"></div>
             
@@ -230,13 +241,13 @@
         <section class="relative w-full min-h-[100dvh] flex flex-col md:flex-row justify-between items-start md:items-center px-[8%] md:px-[12%] pt-32 pb-24 md:pb-12 lg:py-0">
             
             <!-- Left Banner -->
-            <div class="flex flex-col md:mt-32 w-full md:w-1/3 mt-0">
+            <div id="hero-left" class="flex flex-col md:mt-32 w-full md:w-1/3 mt-0">
                 <h2 class="text-brand-light text-base md:text-xl mb-1 font-light tracking-wide glow-text">Hello! I'm</h2>
                 <h1 class="font-clash text-4xl md:text-5xl lg:text-7xl font-semibold leading-[1.1] tracking-tight">Mahesh M</h1>
             </div>
             
             <!-- Right Banner -->
-            <div class="flex flex-col mt-auto md:mt-32 w-full md:w-1/3 items-start md:items-end z-30 pointer-events-auto">
+            <div id="hero-right" class="flex flex-col mt-auto md:mt-32 w-full md:w-1/3 items-start md:items-end z-30 pointer-events-auto">
                 <div class="flex flex-col items-start w-max max-w-[100vw]">
                     <h2 class="text-gray-300 text-base md:text-xl lg:text-2xl font-light tracking-wide mb-1">A Creative</h2>
                     <div class="relative w-full text-left font-clash font-bold uppercase pb-4 md:pb-8 pr-6 md:pr-16">
@@ -257,8 +268,8 @@
                 <!-- Soft glowing orb matching the design -->
                 <div class="absolute top-8 left-[30%] w-16 h-16 bg-[#e0d6ed] rounded-full blur-[40px] pointer-events-none z-0 opacity-60"></div>
                 
-                <h3 class="text-brand-light text-2xl tracking-[0.2em] mb-4 md:mb-6 font-semibold uppercase relative z-10">About Me</h3>
-                <p class="font-sans text-2xl md:text-3xl lg:text-[2rem] font-bold leading-snug md:leading-snug text-white relative z-10 text-shadow-sm">
+                <h3 id="about-heading" class="text-brand-light text-2xl tracking-[0.2em] mb-4 md:mb-6 font-semibold uppercase relative z-10">About Me</h3>
+                <p id="about-body" class="font-sans text-2xl md:text-3xl lg:text-[2rem] font-bold leading-snug md:leading-snug text-white relative z-10 text-shadow-sm">
                     I'm a creative architect & developer with a passion for blending technical expertise with creative edge. Driven by curiosity, I always try to explore and learn new skills.
                 </p>
             </div>
@@ -269,7 +280,7 @@
 
             <!-- Section Title -->
             <div class="text-center mb-20 md:mb-32 w-full flex flex-col items-center">
-                <h2 class="font-sans font-normal text-center" style="font-size:70px; line-height:70px; font-weight:400; background: linear-gradient(0deg, #7f40ff, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">My career &amp;<br>experience</h2>
+                <h2 class="font-sans font-normal text-center grad-heading">My career &amp;<br>experience</h2>
             </div>
 
             <!-- Timeline -->
@@ -288,7 +299,7 @@
                 <div class="flex flex-col" style="gap: clamp(5rem, 8vw, 7rem);">
 
                     <!-- Item 1 -->
-                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                    <div class="timeline-item">
                         <!-- Mobile -->
                         <div class="flex flex-col pl-14 md:hidden">
                             <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">2018</span>
@@ -313,7 +324,7 @@
                     </div>
 
                     <!-- Item 2 -->
-                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                    <div class="timeline-item">
                         <div class="flex flex-col pl-14 md:hidden">
                             <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">2021</span>
                             <h3 class="font-clash text-xl font-semibold text-white leading-snug">Software Engineer</h3>
@@ -336,7 +347,7 @@
                     </div>
 
                     <!-- Item 3 -->
-                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                    <div class="timeline-item">
                         <div class="flex flex-col pl-14 md:hidden">
                             <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">2022</span>
                             <h3 class="font-clash text-xl font-semibold text-white leading-snug">Software<br/> Development Engineer II</h3>
@@ -359,7 +370,7 @@
                     </div>
 
                     <!-- Item 4 -->
-                    <div class="timeline-item" style="opacity:0; transform:translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease;">
+                    <div class="timeline-item">
                         <div class="flex flex-col pl-14 md:hidden">
                             <span class="font-clash text-5xl font-bold tracking-tight mb-3" style="color:rgba(255,255,255,0.55);">NOW</span>
                             <h3 class="font-clash text-xl font-semibold text-white leading-snug">Software<br/> Development Engineer III</h3>
@@ -391,7 +402,7 @@
             <!-- Header -->
             <div class="text-center mb-20 md:mb-32 w-full flex flex-col items-center">
                 <p class="font-sans text-[0.6rem] tracking-[0.35em] uppercase mb-6 text-brand-light">T E C H &nbsp;&nbsp;S T A C K</p>
-                <h2 class="font-sans font-normal text-center" style="font-size:70px; line-height:70px; font-weight:400; background: linear-gradient(0deg, #7f40ff, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Tools I used</h2>
+                <h2 class="font-sans font-normal text-center grad-heading">Tools I used</h2>
             </div>
 
             <!-- SVG Circuit Hub -->
@@ -711,26 +722,34 @@
                 progress = 100;
                 percentageEl.innerText = '100%';
                 progressFill.style.width = '100%';
-                
-                // Show WELCOME
-                setTimeout(() => {
-                    percentageContainer.style.opacity = '0';
-                    loaderText.style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        loaderPill.classList.remove('w-[260px]', 'md:w-[320px]', 'justify-between');
-                        loaderPill.classList.add('justify-center', 'w-[200px]', 'shadow-[0_0_50px_rgba(194,164,255,0.4)]', 'border-[#c2a4ff]/50');
+
+                // GSAP loader-exit timeline
+                const loaderTL = gsap.timeline();
+                loaderTL
+                    .to([percentageContainer, loaderText], { opacity: 0, duration: 0.35, ease: 'power1.out' })
+                    .add(() => {
+                        // Morph pill width via inline style (Tailwind class toggling conflicts with GSAP)
+                        loaderPill.style.width = '200px';
+                        loaderPill.style.justifyContent = 'center';
                         loaderText.innerText = 'WELCOME';
                         percentageContainer.style.display = 'none';
-                        loaderText.style.opacity = '1';
-                        
-                        // Fade entire loader out permanently
-                        setTimeout(() => {
-                            loader.style.opacity = '0';
-                            setTimeout(() => loader.style.display = 'none', 1000);
-                        }, 1200);
-                    }, 500); // structural morph wait
-                }, 500); // 100% pause wait
+                    })
+                    .to(loaderPill, {
+                        boxShadow: '0 0 50px rgba(194,164,255,0.4)',
+                        duration: 0.5,
+                        ease: 'power2.inOut'
+                    })
+                    .to(loaderText, { opacity: 1, duration: 0.3, ease: 'power1.out' })
+                    .to(loader, {
+                        opacity: 0,
+                        duration: 0.9,
+                        delay: 1.1,
+                        ease: 'power2.inOut',
+                        onComplete: () => {
+                            loader.style.display = 'none';
+                            heroEntrance();
+                        }
+                    });
             })
             .catch(error => {
                 clearInterval(interval);
@@ -738,232 +757,235 @@
                 loaderPill.innerHTML = '<span class="text-red-500 font-bold uppercase text-xs">Error Loading Canvas</span>';
             });
     </script>
-    
-    <!-- Text Animation Script -->
+
+    <!-- GSAP main script: cursor, hero entrance, word swap, scroll animations -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const bgText = document.getElementById('bg-text');
-            const fgText = document.getElementById('fg-text');
+        gsap.registerPlugin(ScrollTrigger);
 
-            const words = ['DEVELOPER', 'ARCHITECT'];
-            let bgIndex = 0; // starts at DEVELOPER
-            let fgIndex = 1; // starts at ARCHITECT
-            let animating = false;
+        // ── HERO ELEMENTS (set hidden before entrance) ───────────────────
+        const heroLeftChildren  = document.querySelectorAll('#hero-left > *');
+        const heroRightChildren = document.querySelectorAll('#hero-right > *');
+        const navHeader         = document.querySelector('header');
+        const socialEl          = document.querySelector('.social-container');
 
-            // bg-text: whole-word fade — no spans so background-clip:text works on all browsers including mobile Safari
-            function swapBgText(newWord) {
-                bgText.style.transition = 'opacity 0.35s ease';
-                bgText.style.opacity = '0';
-                setTimeout(() => {
-                    bgText.textContent = newWord;
-                    void bgText.offsetWidth;
-                    bgText.style.opacity = '0.8';
-                }, 400);
-            }
+        gsap.set([navHeader, socialEl, heroLeftChildren, heroRightChildren], { opacity: 0 });
+        gsap.set(navHeader,  { y: -30 });
+        gsap.set(socialEl,   { x: -20 });
+        gsap.set(heroLeftChildren,  { y: 40 });
+        gsap.set(heroRightChildren, { y: 40 });
 
-            // fg-text: character-by-character stagger (white text — no background-clip, spans are fine)
-            function initFgSpans(text) {
-                fgText.innerHTML = '';
-                Array.from(text).forEach((char) => {
-                    const span = document.createElement('span');
-                    span.textContent = char === ' ' ? '\u00A0' : char;
-                    span.style.display = 'inline-block';
-                    span.style.opacity = '1';
-                    span.style.transform = 'translateY(0)';
-                    fgText.appendChild(span);
-                });
-            }
+        // ── HERO ENTRANCE (called after loader exits) ─────────────────────
+        function heroEntrance() {
+            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+            tl.to(navHeader, { y: 0, opacity: 1, duration: 0.7 })
+              .to(socialEl,  { x: 0, opacity: 1, duration: 0.7 }, '-=0.4')
+              .to(heroLeftChildren,  { y: 0, opacity: 1, stagger: 0.12, duration: 0.8 }, '-=0.5')
+              .to(heroRightChildren, { y: 0, opacity: 1, stagger: 0.12, duration: 0.8 }, '-=0.6');
+        }
 
-            function swapFgText(newWord) {
-                const oldSpans = Array.from(fgText.children);
-                oldSpans.forEach((span, i) => {
-                    span.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                    setTimeout(() => {
-                        span.style.opacity = '0';
-                        span.style.transform = 'translateY(15px)';
-                    }, i * 55);
-                });
-
-                const outDelay = (oldSpans.length * 55) + 380;
-                setTimeout(() => {
-                    fgText.innerHTML = '';
-                    const newSpans = Array.from(newWord).map((char) => {
-                        const span = document.createElement('span');
-                        span.textContent = char === ' ' ? '\u00A0' : char;
-                        span.style.display = 'inline-block';
-                        span.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                        span.style.opacity = '0';
-                        span.style.transform = 'translateY(-15px)';
-                        fgText.appendChild(span);
-                        return span;
-                    });
-                    void fgText.offsetWidth;
-                    newSpans.forEach((span, i) => {
-                        setTimeout(() => {
-                            span.style.opacity = '1';
-                            span.style.transform = 'translateY(0)';
-                        }, i * 55);
-                    });
-                }, outDelay);
-            }
-
-            // Initialize — bg uses textContent directly, fg uses spans
-            bgText.textContent = words[bgIndex];
-            initFgSpans(words[fgIndex]);
-
-            setInterval(() => {
-                if (animating) return;
-                animating = true;
-
-                bgIndex = (bgIndex + 1) % words.length;
-                fgIndex = (fgIndex + 1) % words.length;
-
-                swapBgText(words[bgIndex]);
-                swapFgText(words[fgIndex]);
-
-                setTimeout(() => { animating = false; }, 2000);
-            }, 4500);
-        });
-    </script>
-
-    <!-- Custom Cursor Script -->
-    <script>
+        // ── SMOOTH CURSOR (gsap.quickSetter) ─────────────────────────────
         const cursor = document.getElementById('custom-cursor');
-        const socialContainer = document.querySelector('.social-container');
+        gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+        const xSetter = gsap.quickSetter(cursor, 'x', 'px');
+        const ySetter = gsap.quickSetter(cursor, 'y', 'px');
 
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            xSetter(e.clientX);
+            ySetter(e.clientY);
         });
 
+        document.addEventListener('mousedown', () => {
+            gsap.to(cursor, { scale: 0.7, duration: 0.1, ease: 'power2.out' });
+        });
+        document.addEventListener('mouseup', () => {
+            gsap.to(cursor, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
+        });
+
+        const socialContainer = document.querySelector('.social-container');
         if (socialContainer) {
-            socialContainer.addEventListener('mouseenter', () => {
-                cursor.style.opacity = '0';
-            });
-            socialContainer.addEventListener('mouseleave', () => {
-                cursor.style.opacity = '1';
-            });
+            socialContainer.addEventListener('mouseenter', () => gsap.to(cursor, { opacity: 0, duration: 0.2 }));
+            socialContainer.addEventListener('mouseleave', () => gsap.to(cursor, { opacity: 1, duration: 0.2 }));
         }
 
-        // Observer for About section to shift Spline character
-        const aboutSection = document.getElementById('about');
-        const splineContainer = document.querySelector('.spline-container');
-
-        if (aboutSection && splineContainer) {
-            const aboutObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        splineContainer.classList.add('spline-shifted');
-                    } else {
-                        splineContainer.classList.remove('spline-shifted');
-                    }
-                });
-            }, {
-                root: null,
-                threshold: 0.3
-            });
-
-            aboutObserver.observe(aboutSection);
-        }
-
-        // Observer for Experience section — hide Spline robot from experience onwards
-        // Only restore when scrolling back above the experience section.
+        // ── SPLINE: shift on About, hide on Experience ────────────────────
+        const splineContainer  = document.querySelector('.spline-container');
+        const aboutSectionEl   = document.getElementById('about');
         const experienceSectionEl = document.getElementById('experience');
+
+        if (aboutSectionEl && splineContainer) {
+            new IntersectionObserver((entries) => {
+                entries.forEach((e) => {
+                    e.isIntersecting
+                        ? splineContainer.classList.add('spline-shifted')
+                        : splineContainer.classList.remove('spline-shifted');
+                });
+            }, { threshold: 0.3 }).observe(aboutSectionEl);
+        }
+
         if (experienceSectionEl && splineContainer) {
-            const experienceObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
+            new IntersectionObserver((entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) {
                         splineContainer.classList.add('spline-hidden');
-                    } else if (entry.boundingClientRect.top > 0) {
-                        // Section is below viewport — user scrolled back up past it
+                    } else if (e.boundingClientRect.top > 0) {
                         splineContainer.classList.remove('spline-hidden');
                     }
-                    // top < 0: scrolled further down (tech stack, footer) — keep hidden
                 });
-            }, {
-                root: null,
-                threshold: 0.15
+            }, { threshold: 0.15 }).observe(experienceSectionEl);
+        }
+
+        // ── ABOUT SECTION reveal ──────────────────────────────────────────
+        if (aboutSectionEl) {
+            gsap.from('#about-heading', {
+                x: -30, opacity: 0, duration: 0.8, ease: 'power3.out',
+                scrollTrigger: { trigger: aboutSectionEl, start: 'top 75%' }
+            });
+            gsap.from('#about-body', {
+                y: 24, opacity: 0, duration: 0.9, ease: 'power3.out',
+                scrollTrigger: { trigger: aboutSectionEl, start: 'top 68%' }
+            });
+        }
+
+        // ── EXPERIENCE TIMELINE (ScrollTrigger scrub) ─────────────────────
+        const timelineContainer = document.getElementById('timeline-container');
+        const timelineFill      = document.getElementById('timeline-fill');
+        const timelineItems     = gsap.utils.toArray('.timeline-item');
+
+        if (timelineContainer && timelineFill && timelineItems.length) {
+            // Pre-hide items (GSAP owns state — no inline styles needed)
+            gsap.set(timelineItems, { opacity: 0, y: 28 });
+
+            // Scrubbed fill
+            gsap.to(timelineFill, {
+                height: '100%',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: timelineContainer,
+                    start: 'top 65%',
+                    end: 'bottom 35%',
+                    scrub: 0.6
+                }
             });
 
-            experienceObserver.observe(experienceSectionEl);
-        }
-        (function () {
-            const container  = document.getElementById('timeline-container');
-            const fill       = document.getElementById('timeline-fill');
-            const items      = Array.from(document.querySelectorAll('.timeline-item'));
-            if (!container || !fill || !items.length) return;
-
-            // Cache each item's top offset relative to the container (absolute, not viewport)
-            // Called once on init and on resize to account for reflow.
-            let itemTops = [];
-            function cacheOffsets() {
-                const cTop = container.getBoundingClientRect().top + window.scrollY;
-                itemTops = items.map(el => el.getBoundingClientRect().top + window.scrollY - cTop);
-            }
-
-            function update() {
-                const cRect  = container.getBoundingClientRect();
-                const cH     = container.offsetHeight;
-                const viewH  = window.innerHeight;
-                const scrollY = window.scrollY;
-
-                // Animation window:
-                //   starts when container-top reaches 65% down the viewport
-                //   ends   when container-bottom reaches 35% down the viewport
-                const cAbsTop = cRect.top + scrollY;
-                const animStart = cAbsTop - viewH * 0.65;
-                const animEnd   = cAbsTop + cH   - viewH * 0.35;
-                const progress  = Math.min(1, Math.max(0, (scrollY - animStart) / (animEnd - animStart)));
-
-                fill.style.height = (progress * 100) + '%';
-
-                // linePx: how far down the container the fill tip has reached
-                const linePx = progress * cH;
-
-                items.forEach(function(item, i) {
-                    // Reveal when the line tip is within 40px above the item's top
-                    if (linePx >= (itemTops[i] || 0) - 40) {
-                        item.style.opacity  = '1';
-                        item.style.transform = 'translateY(0)';
+            // Items fade in sequentially as the fill passes them
+            timelineItems.forEach((item, i) => {
+                gsap.to(item, {
+                    opacity: 1, y: 0, duration: 0.65, ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 78%',
+                        toggleActions: 'play none none reverse'
                     }
                 });
-            }
+            });
+        }
 
-            // Init — wait a tick so layout is settled
-            setTimeout(function() {
-                cacheOffsets();
-                update();
-            }, 80);
+        // ── TECH STACK SVG (ScrollTrigger one-shot) ───────────────────────
+        const tsStage = document.getElementById('ts-stage');
+        if (tsStage) {
+            const tsIcons = gsap.utils.toArray('.ts-icon');
+            const tsLines = gsap.utils.toArray('.ts-glow');
+            const tsDots  = gsap.utils.toArray('.ts-dot');
 
-            window.addEventListener('scroll', update, { passive: true });
-            window.addEventListener('resize', function() { cacheOffsets(); update(); });
-        })();
+            // Pre-set via GSAP (CSS no longer sets initial state)
+            gsap.set(tsIcons, { scale: 0.8, opacity: 0 });
+            gsap.set(tsLines, { strokeDashoffset: 1 });
+            gsap.set(tsDots,  { opacity: 0 });
 
-        // ── Tech Stack SVG — animate on scroll ───────────────────────────
-        (function () {
-            const stage = document.getElementById('ts-stage');
-            if (!stage) return;
-            let fired = false;
-            const obs = new IntersectionObserver(function (entries) {
-                if (fired || !entries[0].isIntersecting) return;
-                fired = true;
-                obs.disconnect();
-                const icons = stage.querySelectorAll('.ts-icon');
-                const lines = stage.querySelectorAll('.ts-glow');
-                const dots  = stage.querySelectorAll('.ts-dot');
-                icons.forEach(function(el, i) {
-                    setTimeout(function() { el.classList.add('ts-visible'); }, i * 70);
-                });
-                lines.forEach(function(el, i) {
-                    setTimeout(function() { el.classList.add('ts-drawn'); }, 200 + i * 110);
-                });
-                dots.forEach(function(el, i) {
-                    setTimeout(function() { el.classList.add('ts-visible'); }, 500 + i * 50);
-                });
-            }, { threshold: 0.2 });
-            obs.observe(stage);
-        })();
+            ScrollTrigger.create({
+                trigger: tsStage,
+                start: 'top 75%',
+                once: true,
+                onEnter: () => {
+                    gsap.to(tsIcons, {
+                        scale: 1, opacity: 1, stagger: 0.07,
+                        duration: 0.5, ease: 'back.out(1.5)'
+                    });
+                    gsap.to(tsLines, {
+                        strokeDashoffset: 0, stagger: 0.11,
+                        duration: 1.1, ease: 'power2.inOut',
+                        delay: 0.2
+                    });
+                    gsap.to(tsDots, {
+                        opacity: 1, stagger: 0.05,
+                        duration: 0.35, ease: 'power1.out',
+                        delay: 0.5
+                    });
+                }
+            });
+        }
 
+        // ── ORB PARALLAX ─────────────────────────────────────────────────
+        const orbs = gsap.utils.toArray('.fixed.rounded-full.pointer-events-none.z-0');
+        orbs.forEach((orb, i) => {
+            const yAmt = [60, -80, 50][i] ?? 60;
+            gsap.to(orb, {
+                y: yAmt,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: document.body,
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 1.5
+                }
+            });
+        });
+
+        // ── WORD SWAP (GSAP) ──────────────────────────────────────────────
+        const bgText = document.getElementById('bg-text');
+        const fgText = document.getElementById('fg-text');
+        const words  = ['DEVELOPER', 'ARCHITECT'];
+        let bgIdx = 0, fgIdx = 1, swapping = false;
+
+        function buildSpans(el, text) {
+            el.innerHTML = '';
+            return Array.from(text).map(char => {
+                const s = document.createElement('span');
+                s.textContent = char === ' ' ? '\u00A0' : char;
+                s.style.display = 'inline-block';
+                el.appendChild(s);
+                return s;
+            });
+        }
+
+        // Initialize fg with spans visible
+        const initSpans = buildSpans(fgText, words[fgIdx]);
+        bgText.textContent = words[bgIdx];
+
+        function doSwap() {
+            if (swapping) return;
+            swapping = true;
+            bgIdx = (bgIdx + 1) % words.length;
+            fgIdx = (fgIdx + 1) % words.length;
+
+            // bg-text: whole-word fade (no spans — preserves background-clip:text on Safari)
+            gsap.to(bgText, {
+                opacity: 0, duration: 0.3, ease: 'power1.in',
+                onComplete: () => {
+                    bgText.textContent = words[bgIdx];
+                    gsap.to(bgText, { opacity: 0.8, duration: 0.3, ease: 'power1.out' });
+                }
+            });
+
+            // fg-text: stagger exit down, then stagger enter from top
+            const oldSpans = Array.from(fgText.children);
+            gsap.to(oldSpans, {
+                opacity: 0, y: 15, stagger: 0.04, duration: 0.35, ease: 'power2.in',
+                onComplete: () => {
+                    const newSpans = buildSpans(fgText, words[fgIdx]);
+                    gsap.fromTo(newSpans,
+                        { opacity: 0, y: -15 },
+                        {
+                            opacity: 1, y: 0, stagger: 0.055, duration: 0.4,
+                            ease: 'power2.out',
+                            onComplete: () => { swapping = false; }
+                        }
+                    );
+                }
+            });
+        }
+
+        setInterval(doSwap, 4500);
     </script>
 </body>
 </html>
